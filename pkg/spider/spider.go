@@ -14,6 +14,11 @@ type Task struct {
 	Tags string
 }
 
+//Spider can receive tasks from api server
+// The downloader will download request and yield responses to spider
+// the main components maybe like `scrapy` https://doc.scrapy.org/en/latest/topics/architecture.html
+// but there're some components removed for simple
+
 type Spider struct {
 	TaskChan     chan *Task
 	responseChan chan *http.Response
@@ -29,6 +34,7 @@ func NewSpider() *Spider {
 	return &spider
 }
 
+//Run  task consumer
 func (spider *Spider) Run() {
 	go func() {
 		for true {
