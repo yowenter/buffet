@@ -51,6 +51,7 @@ func (spider *Spider) Run() {
 			if error != nil {
 				log.Errorf("Build request error %v+", error)
 			}
+
 			go spider.download(request)
 		}
 	}()
@@ -75,6 +76,7 @@ func (spider *Spider) Run() {
 }
 
 func (spider *Spider) download(request *http.Request) {
+	request.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36")
 	client := &http.Client{Timeout: 30 * time.Second}
 	res, err := client.Do(request)
 	if err != nil {
