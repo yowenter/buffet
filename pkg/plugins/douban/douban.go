@@ -20,14 +20,29 @@ func (d *DoubanParser) Parse(res *http.Response) *lib.Item {
 	if err != nil {
 		log.Warnf("Parse document error %v %v ", res, err)
 	}
-	//#info
-	doc.Find("div#info").Each(func(i int, s *goquery.Selection) {
-		log.Debug(i, s.Text())
-	})
 
-	log.Debug(doc.Find("div.related_info").Text())
+	// the selectors are copied from chrome -)
+	// I don't know much about jquery .
+	title := doc.Find("#wrapper > h1 > span")
+	author := doc.Find("#info > span:nth-child(1) > a")
+	intro := doc.Find("#link-report > span.all.hidden > div > div")
+	var tags = []string{}
 
-	return &lib.Item{}
+	tagsSelector := doc.Find("#db-tags-section > div")
+	tagsSelector.Each(
+		// #db-tags-section > div > span:nth-child(1) > a
+		func(i int, s *goquery.Selection) {
+			aSelector := s.Find("span >a")
+			tags = append(tags, aSelector.Text())
+		})
+
+	return &lib.Item{
+		Author:      author.Text(),
+		Link:        *(res.Request.URL),
+		Subject:     title.Text(),
+		Description: intro.Text(),
+		Tags:        tags,
+	}
 
 }
 

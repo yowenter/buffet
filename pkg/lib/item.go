@@ -1,12 +1,15 @@
 package lib
 
-import "net/url"
+import (
+	"net/url"
+)
 
 // Item describe a info card
 type Item struct {
 	Metadata    map[string]interface{}
 	Tags        []string
 	Subject     string
+	Author      string
 	Description string
 	Link        url.URL
 	References  []string
@@ -19,3 +22,4 @@ type Item struct {
 // 为了使信息可追溯， 所以要表明来源 -）
 // 当然， 因为所有的信息都是息息相关的，所以要加一个 参考文档
 // Metadata 这东西，为了扩展，先扔个 hash 表。 万一以后要加什么字段也方便。
+// author 这个字段， 毕竟产生信息的终归还是人。 所以，加上author 这个字段。

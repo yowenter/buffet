@@ -22,14 +22,19 @@ type Task struct {
 type Spider struct {
 	TaskChan     chan *Task
 	responseChan chan *http.Response
+	itemPipeChan chan *lib.Item
+
+	// todo 增加重试机制；
 }
 
 func NewSpider() *Spider {
 	taskCh := make(chan *Task, 10) // 避免阻塞的channel
 	resCh := make(chan *http.Response, 10)
+	itemPipeCh := make(chan *lib.Item, 10)
 	spider := Spider{
 		TaskChan:     taskCh,
 		responseChan: resCh,
+		itemPipeChan: itemPipeCh,
 	}
 	return &spider
 }
@@ -37,6 +42,7 @@ func NewSpider() *Spider {
 //Run  task consumer
 func (spider *Spider) Run() {
 	go func() {
+		log.Info("Start consuming reuquest task")
 		for true {
 			task, ok := <-spider.TaskChan
 			if !ok {
@@ -57,20 +63,36 @@ func (spider *Spider) Run() {
 	}()
 
 	go func() {
+		log.Info("Start consuming response task")
 		for true {
 			response, ok := <-spider.responseChan
 			if !ok {
 				log.Warnf("Fetch response from channel failed ")
+				time.Sleep(3 * time.Second)
 				continue
 			}
 
 			item := spider.parse(response)
+
 			if item == nil {
 				continue
 			}
-			spider.dump(item)
+			spider.itemPipeChan <- item
+		}
+	}()
+
+	go func() {
+		log.Info("Start consuming item pipe task")
+		for true {
+			item, ok := <-spider.itemPipeChan
+			if !ok {
+				log.Warnf("Fetch item pipe from channel failed")
+				continue
+			}
+			go spider.dump(item)
 
 		}
+
 	}()
 
 }
@@ -112,7 +134,7 @@ func (spider *Spider) parse(response *http.Response) *lib.Item {
 
 func (spider *Spider) dump(item *lib.Item) {
 	// Dump item to airtable & Google Spreadsheet
-	//
+	// Maybe
 	log.Debugf("Dumping item %+v", item)
 
 }

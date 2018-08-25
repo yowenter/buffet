@@ -37,7 +37,3 @@ func registerPlugins() {
 func init() {
 	registerPlugins()
 }
-
-type Item struct {
-	metadata string
-}
