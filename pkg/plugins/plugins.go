@@ -14,6 +14,10 @@ type Parser interface {
 	Match(url *url.URL) bool
 }
 
+type Storage interface {
+	Dump(item *lib.Item)
+}
+
 var plugins []Parser
 
 func MatchPlugin(url *url.URL) *Parser {

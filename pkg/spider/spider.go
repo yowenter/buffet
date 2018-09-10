@@ -7,6 +7,7 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/yowenter/buffet/pkg/lib"
 	"github.com/yowenter/buffet/pkg/plugins"
+	"github.com/yowenter/buffet/pkg/plugins/storage/airtable"
 )
 
 type Task struct {
@@ -23,18 +24,21 @@ type Spider struct {
 	TaskChan     chan *Task
 	responseChan chan *http.Response
 	itemPipeChan chan *lib.Item
+	storage      plugins.Storage
 
 	// todo 增加重试机制；
 }
 
-func NewSpider() *Spider {
+func NewSpider(apikey string) *Spider {
 	taskCh := make(chan *Task, 10) // 避免阻塞的channel
 	resCh := make(chan *http.Response, 10)
 	itemPipeCh := make(chan *lib.Item, 10)
+	store := airtable.Airtable{APIKey: apikey}
 	spider := Spider{
 		TaskChan:     taskCh,
 		responseChan: resCh,
 		itemPipeChan: itemPipeCh,
+		storage:      &store,
 	}
 	return &spider
 }
@@ -136,7 +140,7 @@ func (spider *Spider) dump(item *lib.Item) {
 	// Dump item to airtable & Google Spreadsheet
 	// Maybe
 	log.Debugf("Dumping item %+v", item)
-
+	spider.storage.Dump(item)
 }
 
 //
