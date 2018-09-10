@@ -24,12 +24,9 @@ A really simple HTTP API Server + Spider
 
 
 
-# 先定个小目标： 9 月 1 日上线到 IFTTTT
+# 先定个小目标： 9 月 15 日上线到 IFTTTT
 
 懒癌晚期， 还是得有个小目标。 万一一不小心在上班划水的时候，就写完了呢。
-
-
-
 
 
 
