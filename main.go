@@ -55,6 +55,10 @@ type IftttSamplesData struct {
 	Samples Samples `json:"samples"`
 }
 
+type IftttTestData struct {
+	Data IftttSamplesData `json:"data"`
+}
+
 type IftttMessage struct {
 	ActionFields Collect `json:"actionFields"`
 }
@@ -148,6 +152,10 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(b))
 }
 
+func (s *BuffetAPIServer) status(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "ok")
+}
+
 func (s *BuffetAPIServer) test(w http.ResponseWriter, r *http.Request) {
 
 	if val, ok := r.Header["Ifttt-Service-Key"]; ok {
@@ -167,8 +175,11 @@ func (s *BuffetAPIServer) test(w http.ResponseWriter, r *http.Request) {
 		exampleData := IftttSamplesData{
 			Samples: exampleSamples,
 		}
+		data := IftttTestData{
+			Data: exampleData,
+		}
 
-		b, err := json.Marshal(exampleData)
+		b, err := json.Marshal(data)
 		if err != nil {
 			fmt.Fprintf(w, "Error")
 			return

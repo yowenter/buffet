@@ -10,7 +10,7 @@ WORKDIR /go/src/github.com/yowenter/buffet
 
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-RUN dep ensure -v
+RUN dep ensure -v --vendor-only
 
 EXPOSE 5000
 
