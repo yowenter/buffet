@@ -6,7 +6,7 @@ RUN mkdir /go/src/app
 ADD . /go/src/app
 WORKDIR /go/src/app
 
-RUN mkdir github.com/yowenter/buffet
+RUN mkdir -p /go/src/app/github.com/yowenter/buffet
 RUN cp -rf pkg github.com/yowenter/buffet/
 
 
