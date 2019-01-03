@@ -111,7 +111,7 @@ func (s *BuffetAPIServer) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 func (s *BuffetAPIServer) InstallHandlers() {
 	s.router.HandleFunc("/", s.home)
-	s.router.HandleFunc("/ifttt/v1/actions/collect_a_link", s.collect)
+	s.router.HandleFunc("/ifttt/v1/actions/collect", s.collect)
 	s.router.HandleFunc("/ifttt/v1/test/setup", s.test)
 	s.router.HandleFunc("/ifttt/v1/status", s.status)
 }
