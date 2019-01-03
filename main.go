@@ -2,11 +2,11 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/gorilla/mux"
@@ -14,12 +14,17 @@ import (
 	"github.com/yowenter/buffet/pkg/spider"
 )
 
+// ifttt configuration
+type IftttConf struct {
+	IftttServiceKey string
+	IftttChannelKey string
+}
+
 // BuffetAPIServer ...
 type BuffetAPIServer struct {
-	airtableKey string
-	airtableAPI string
-	router      *mux.Router
-	spider      *spider.Spider
+	router    *mux.Router
+	spider    *spider.Spider
+	IftttConf *IftttConf
 }
 
 // type IftttExampleData struct {
@@ -64,19 +69,21 @@ type IftttMessage struct {
 }
 
 func main() {
-	fmt.Println("Main")
+	fmt.Println("Ifttt service `buffet` starting ....")
+	iftttServiceKey := os.Getenv("IFTTT_SERVICE_KEY")
+	iftttChannelKey := os.Getenv("IFTTT_CHANNEL_KEY")
 
-	airtableKey := flag.String("airtable-key", "", "Airtable API Key")
-	airtableAPI := flag.String("airtable-api", "", "Airtable base API url")
-	flag.Parse()
+	iftttConf := &IftttConf{
+		IftttChannelKey: iftttChannelKey,
+		IftttServiceKey: iftttServiceKey,
+	}
 
 	router := mux.NewRouter()
 	spider := spider.NewSpider()
 	buffetServer := &BuffetAPIServer{
-		airtableKey: *airtableKey,
-		airtableAPI: *airtableAPI,
-		router:      router,
-		spider:      spider,
+		router:    router,
+		spider:    spider,
+		IftttConf: iftttConf,
 	}
 	log.Debugf("Init Buffet server  %+v", *buffetServer)
 	buffetServer.InstallHandlers()
@@ -153,49 +160,69 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(b))
 }
 
-func (s *BuffetAPIServer) status(w http.ResponseWriter, r *http.Request) {
-	_, ok := r.Header["IFTTT-Service-Key"]
+func (s *BuffetAPIServer) verifyIftttKey(r *http.Request) (b bool, errString string) {
+	verified := true
+	errString = ""
+	serviceKey, ok := r.Header["Ifttt-Service-Key"]
 	if !ok {
-		http.Error(w, "No IFTTT-Service-Key", 401)
-		return
+		errString = "no service key"
+		return false, errString
+	}
+	channelKey, ok := r.Header["Ifttt-Channel-Key"]
+	if !ok {
+		errString = "no channel key"
+		return false, errString
 	}
 
+	if strings.Join(serviceKey, "") != s.IftttConf.IftttServiceKey || strings.Join(channelKey, "") != s.IftttConf.IftttChannelKey {
+		errString = "invalid service or channel key"
+	}
+	if len(errString) > 0 {
+		verified = false
+	}
+	return verified, errString
+}
+
+func (s *BuffetAPIServer) status(w http.ResponseWriter, r *http.Request) {
+	ok, err := s.verifyIftttKey(r)
+	if !ok {
+		http.Error(w, err, 401)
+		return
+	}
 	fmt.Fprintf(w, "ok")
 }
 
 func (s *BuffetAPIServer) test(w http.ResponseWriter, r *http.Request) {
-
-	if val, ok := r.Header["Ifttt-Service-Key"]; ok {
-		log.Debug("Ifttt-Service-key", val)
-
-		// those codes below is so stupid :-)
-		exampleCollect := Collect{
-			URL:  "http://blog.heytaoge.com",
-			Tags: "Blog, Personal",
-		}
-		exampleActions := Actions{
-			Collect: exampleCollect,
-		}
-		exampleSamples := Samples{
-			Actions: exampleActions,
-		}
-		exampleData := IftttSamplesData{
-			Samples: exampleSamples,
-		}
-		data := IftttTestData{
-			Data: exampleData,
-		}
-
-		b, err := json.Marshal(data)
-		if err != nil {
-			fmt.Fprintf(w, "Error")
-			return
-		}
-		fmt.Fprintf(w, string(b))
-
-	} else {
-		fmt.Fprintf(w, "No ifttt service key")
+	ok, errString := s.verifyIftttKey(r)
+	if !ok {
+		http.Error(w, errString, 401)
+		return
 	}
+
+	// those codes below is so stupid :-)
+	exampleCollect := Collect{
+		URL:  "http://blog.heytaoge.com",
+		Tags: "Blog, Personal",
+	}
+	exampleActions := Actions{
+		Collect: exampleCollect,
+	}
+	exampleSamples := Samples{
+		Actions: exampleActions,
+	}
+	exampleData := IftttSamplesData{
+		Samples: exampleSamples,
+	}
+	data := IftttTestData{
+		Data: exampleData,
+	}
+
+	b, err := json.Marshal(data)
+	if err != nil {
+		fmt.Fprintf(w, "Error")
+		return
+	}
+	fmt.Fprintf(w, string(b))
 
 }
 
