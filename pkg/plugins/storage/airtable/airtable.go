@@ -5,8 +5,8 @@ import (
 )
 
 type Airtable struct {
-	APIKey     string
-	CatalogAPI string
+	APIKey   string
+	TableAPI string
 }
 
 func (t *Airtable) Dump(item *lib.Item) {

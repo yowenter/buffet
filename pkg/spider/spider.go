@@ -29,11 +29,11 @@ type Spider struct {
 	// todo 增加重试机制；
 }
 
-func NewSpider(apikey string) *Spider {
+func NewSpider() *Spider {
 	taskCh := make(chan *Task, 10) // 避免阻塞的channel
 	resCh := make(chan *http.Response, 10)
 	itemPipeCh := make(chan *lib.Item, 10)
-	store := airtable.Airtable{APIKey: apikey}
+	store := airtable.Airtable{}
 	spider := Spider{
 		TaskChan:     taskCh,
 		responseChan: resCh,
