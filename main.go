@@ -153,6 +153,12 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *BuffetAPIServer) status(w http.ResponseWriter, r *http.Request) {
+	_, ok := r.Header["IFTTT-Service-Key"]
+	if !ok {
+		http.Error(w, "No IFTTT-Service-Key", 401)
+		return
+	}
+
 	fmt.Fprintf(w, "ok")
 }
 
