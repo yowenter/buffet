@@ -6,8 +6,8 @@ RUN mkdir /go/src/app
 ADD . /go/src/app
 WORKDIR /go/src/app
 
-RUN mkdir -p /go/src/app/github.com/yowenter/buffet
-RUN cp -rf pkg github.com/yowenter/buffet/
+RUN mkdir -p /go/src/github.com/yowenter/buffet
+RUN cp -rf pkg /go/src/github.com/yowenter/buffet/
 
 
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
