@@ -122,6 +122,11 @@ func (s *BuffetAPIServer) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
+	ok, errString := s.verifyIftttKey(r)
+	if !ok {
+		http.Error(w, errString, 401)
+		return
+	}
 
 	b, err := ioutil.ReadAll(r.Body)
 	if err != nil {
