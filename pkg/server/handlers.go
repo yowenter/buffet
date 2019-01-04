@@ -19,7 +19,16 @@ func (s *BuffetAPIServer) home(w http.ResponseWriter, r *http.Request) {
 func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	ok, errString := s.verifyIftttKey(r)
 	if !ok {
-		http.Error(w, errString, 401)
+		err := Error{
+			Msg: errString,
+		}
+		errResp := ErrorResp{
+			Data:   "",
+			Errors: []Error{err},
+		}
+		b, _ := json.Marshal(errResp)
+
+		http.Error(w, string(b), 401)
 		return
 	}
 
