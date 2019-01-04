@@ -62,10 +62,7 @@ type IftttObject struct {
 	Url string `json:"url"`
 }
 
-type Error struct {
-	Msg string `json:"msg"`
-}
 type ErrorResp struct {
-	Data   string  `json:"data"`
-	Errors []Error `json:"errors"`
+	Data   IftttObject `json:"data"`
+	Errors []string    `json:"errors"`
 }

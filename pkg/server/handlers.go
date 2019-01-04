@@ -19,12 +19,10 @@ func (s *BuffetAPIServer) home(w http.ResponseWriter, r *http.Request) {
 func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	ok, errString := s.verifyIftttKey(r)
 	if !ok {
-		err := Error{
-			Msg: errString,
-		}
+
 		errResp := ErrorResp{
-			Data:   "",
-			Errors: []Error{err},
+			Data:   IftttObject{},
+			Errors: []string{errString},
 		}
 		b, _ := json.Marshal(errResp)
 
@@ -45,18 +43,14 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log.Debugf("IftttMsg URL: %v, Tags: %v ", iftttMsg.ActionFields.URL, iftttMsg.ActionFields.Tags)
+	log.Debugf("IftttMsg URL: `%v`, Tags: `%v` ", iftttMsg.ActionFields.URL, iftttMsg.ActionFields.Tags)
 
 	if len(iftttMsg.ActionFields.URL) < 1 {
-		err := Error{
-			Msg: "No URL provided",
-		}
 		errResp := ErrorResp{
-			Data:   "",
-			Errors: []Error{err},
+			Data:   IftttObject{},
+			Errors: []string{"No URL provided"},
 		}
 		b, _ := json.Marshal(errResp)
-
 		http.Error(w, string(b), 400)
 		return
 	}
