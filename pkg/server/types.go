@@ -66,6 +66,5 @@ type Error struct {
 	Message string `json:"message"`
 }
 type ErrorResp struct {
-	Data   []IftttObject `json:"data"`
-	Errors []Error       `json:"errors"`
+	Errors []Error `json:"errors"`
 }
