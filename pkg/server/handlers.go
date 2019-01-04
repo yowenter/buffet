@@ -22,7 +22,7 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 
 		errResp := ErrorResp{
 			Data:   IftttObject{},
-			Errors: []string{errString},
+			Errors: []Error{Error{Message: errString}},
 		}
 		b, _ := json.Marshal(errResp)
 
@@ -48,7 +48,7 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	if len(iftttMsg.ActionFields.URL) < 1 {
 		errResp := ErrorResp{
 			Data:   IftttObject{},
-			Errors: []string{"No URL provided"},
+			Errors: []Error{Error{Message: "No URL provided"}},
 		}
 		b, _ := json.Marshal(errResp)
 		http.Error(w, string(b), 400)
