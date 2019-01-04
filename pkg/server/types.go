@@ -39,5 +39,25 @@ type IftttTestData struct {
 }
 
 type IftttMessage struct {
-	ActionFields Collect `json:"actionFields"`
+	ActionFields Collect     `json:"actionFields"`
+	IftttSource  IftttSource `json:"ifttt_source"`
+	User         User        `json:"user"`
+}
+
+type User struct {
+	Timezone string `json:"timezone"`
+}
+
+type IftttSource struct {
+	Id  string `json:"id"`
+	Url string `json:"url"`
+}
+
+type IftttResp struct {
+	Data []IftttObject `json:"data"`
+}
+
+type IftttObject struct {
+	Id  string `json:"id"`
+	Url string `json:"url"`
 }

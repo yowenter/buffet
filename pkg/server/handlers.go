@@ -44,12 +44,13 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	}
 	s.Spider.TaskChan <- &task
 
-	response := struct {
-		Code    string `json:"code"`
-		Message string `json:"message"`
-	}{
-		Code:    "success",
-		Message: "",
+	data := IftttObject{
+		Id:  "test",
+		Url: "http://baidu.com",
+	}
+	array := []IftttObject{data}
+	response := IftttResp{
+		Data: array,
 	}
 	b, er := json.Marshal(response)
 	if er != nil {
