@@ -47,6 +47,20 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 
 	log.Debugf("IftttMsg URL: %v, Tags: %v ", iftttMsg.ActionFields.URL, iftttMsg.ActionFields.Tags)
 
+	if len(iftttMsg.ActionFields.URL) < 1 {
+		err := Error{
+			Msg: "No URL provided",
+		}
+		errResp := ErrorResp{
+			Data:   "",
+			Errors: []Error{err},
+		}
+		b, _ := json.Marshal(errResp)
+
+		http.Error(w, string(b), 400)
+		return
+	}
+
 	task := spider.Task{
 		Url:  iftttMsg.ActionFields.URL,
 		Tags: iftttMsg.ActionFields.Tags,
