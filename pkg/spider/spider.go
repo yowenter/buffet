@@ -1,6 +1,7 @@
 package spider
 
 import (
+	"fmt"
 	"net/http"
 	"time"
 
@@ -25,11 +26,16 @@ type Spider struct {
 	responseChan chan *http.Response
 	itemPipeChan chan *lib.Item
 	storage      plugins.Storage
+	name         string
 
 	// todo 增加重试机制；
 }
 
-func NewSpider() *Spider {
+func (s *Spider) String() string {
+	return fmt.Sprintf("Spider <%s>", s.name)
+}
+
+func NewSpider(n string) *Spider {
 	taskCh := make(chan *Task, 10) // 避免阻塞的channel
 	resCh := make(chan *http.Response, 10)
 	itemPipeCh := make(chan *lib.Item, 10)
@@ -39,6 +45,7 @@ func NewSpider() *Spider {
 		responseChan: resCh,
 		itemPipeChan: itemPipeCh,
 		storage:      &store,
+		name:         n,
 	}
 	return &spider
 }
