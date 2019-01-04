@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
@@ -125,9 +124,4 @@ func (s *BuffetAPIServer) test(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Fprintf(w, string(b))
 
-}
-
-func init() {
-	log.SetOutput(os.Stdout)
-	log.SetLevel(log.DebugLevel)
 }
