@@ -102,8 +102,8 @@ func (s *BuffetAPIServer) test(w http.ResponseWriter, r *http.Request) {
 
 	// those codes below is so stupid :-)
 	exampleCollect := Collect{
-		URL:  "http://blog.heytaoge.com",
-		Tags: "Blog, Personal",
+		URL:  "http://example.com",
+		Tags: "Example, Favorite, Ifttt",
 	}
 	exampleActions := Actions{
 		Collect: exampleCollect,

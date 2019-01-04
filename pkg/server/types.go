@@ -24,7 +24,7 @@ type Collect struct {
 }
 
 type Actions struct {
-	Collect Collect `json:"collect_a_link"`
+	Collect Collect `json:"collect"`
 }
 
 type Samples struct {
