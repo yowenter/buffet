@@ -19,7 +19,6 @@ func (s *BuffetAPIServer) home(w http.ResponseWriter, r *http.Request) {
 func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	ok, errString := s.verifyIftttKey(r)
 	if !ok {
-
 		errResp := ErrorResp{
 			Errors: []Error{Error{Message: errString}},
 		}
@@ -35,16 +34,16 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var iftttMsg IftttMessage
-	err = json.Unmarshal(b, &iftttMsg)
+	var iftttAction IftttAction
+	err = json.Unmarshal(b, &iftttAction)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
 
-	log.Debugf("IftttMsg URL: `%v`, Tags: `%v` ", iftttMsg.ActionFields.URL, iftttMsg.ActionFields.Tags)
+	log.Debugf("Ifttt action url: `%v`, tags: `%v` ", iftttAction.ActionFields.URL, iftttAction.ActionFields.Tags)
 
-	if len(iftttMsg.ActionFields.URL) < 1 {
+	if len(iftttAction.ActionFields.URL) < 1 {
 		errResp := ErrorResp{
 			Errors: []Error{Error{Message: "No URL provided"}},
 		}
@@ -53,19 +52,16 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	task := spider.Task{
-		Url:  iftttMsg.ActionFields.URL,
-		Tags: iftttMsg.ActionFields.Tags,
-	}
+	task := spider.NewTask(iftttAction.ActionFields.URL)
 	s.Spider.TaskChan <- &task
 
 	data := IftttObject{
-		Id:  "test",
-		Url: "http://baidu.com",
+		Id:  task.Id,
+		Url: iftttAction.ActionFields.URL,
 	}
-	array := []IftttObject{data}
+	dataArr := []IftttObject{data}
 	response := IftttResp{
-		Data: array,
+		Data: dataArr,
 	}
 	b, er := json.Marshal(response)
 	if er != nil {

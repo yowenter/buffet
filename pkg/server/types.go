@@ -38,7 +38,7 @@ type IftttTestData struct {
 	Data IftttSamplesData `json:"data"`
 }
 
-type IftttMessage struct {
+type IftttAction struct {
 	ActionFields Collect     `json:"actionFields"`
 	IftttSource  IftttSource `json:"ifttt_source"`
 	User         User        `json:"user"`

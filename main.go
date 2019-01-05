@@ -18,7 +18,7 @@ func init() {
 }
 
 func main() {
-	fmt.Println("Ifttt service `buffet` starting ....")
+	fmt.Println("IFTTT Service Buffet Starting ....")
 	iftttServiceKey := os.Getenv("IFTTT_SERVICE_KEY")
 	iftttChannelKey := os.Getenv("IFTTT_CHANNEL_KEY")
 
@@ -34,7 +34,7 @@ func main() {
 		Spider:    spider,
 		IftttConf: iftttConf,
 	}
-	log.Debugf("Init Buffet server  %+v", *buffetServer)
+	log.Debugf("Init Buffet server:  `%+v` ", *buffetServer)
 	buffetServer.InstallHandlers()
 
 	buffetAPIServer := &http.Server{
