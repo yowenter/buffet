@@ -6,7 +6,6 @@ import (
 	"time"
 
 	log "github.com/sirupsen/logrus"
-	"github.com/yowenter/buffet/pkg/lib"
 	"github.com/yowenter/buffet/pkg/plugins"
 	"github.com/yowenter/buffet/pkg/plugins/storage/airtable"
 )
@@ -17,28 +16,6 @@ import (
 // but there're some components removed for simple
 // 爬虫 task 有 download, parse, save 三个阶段， 每个阶段 通过 channel 更新 task 状态。
 // Task 列表 存放在 内存中， 使用 hash 表 存储。  当 task 超过 100 个时， 将老的清除。
-
-type TaskResponse struct {
-	Id       string
-	Response *http.Response
-}
-
-type TaskItem struct {
-	Id   string
-	Item *lib.Item
-}
-
-type TaskRequest struct {
-	Id      string
-	Request *http.Request
-}
-
-type TaskMsg struct {
-	Id      string
-	Phase   string
-	Message string
-	Data    interface{}
-}
 
 type Spider struct {
 	TaskChan     chan *Task
@@ -92,6 +69,7 @@ func (spider *Spider) ManageTasks() {
 			continue
 		}
 		log.Debugf("Manage task state by task message %+v", taskMsg)
+		TotalTasks.UpdateTask(taskMsg)
 	}
 }
 
@@ -172,7 +150,7 @@ func (spider *Spider) download(taskReq *TaskRequest) {
 		Response: res,
 	}
 	spider.responseChan <- &taskResp
-	spider.SendMsg(taskReq.Id, "Download", fmt.Sprintf("Downloading %s", taskReq.Request.URL), nil)
+	spider.SendMsg(taskReq.Id, DOWNLOAD, fmt.Sprintf("Downloading %s", taskReq.Request.URL), nil)
 }
 
 func (spider *Spider) parse(taskResp *TaskResponse) *TaskItem {
@@ -193,7 +171,7 @@ func (spider *Spider) parse(taskResp *TaskResponse) *TaskItem {
 		Id:   taskResp.Id,
 		Item: item,
 	}
-	spider.SendMsg(taskResp.Id, "Parse", fmt.Sprintf("Parsed %s", taskResp.Id), taskItem)
+	spider.SendMsg(taskResp.Id, PARSE, fmt.Sprintf("Parsed %s", taskResp.Id), taskItem)
 	return &taskItem
 
 }
@@ -203,7 +181,7 @@ func (spider *Spider) dump(taskItem *TaskItem) {
 	// Maybe
 	log.Debugf("Dumping item %+v", taskItem.Item)
 	spider.storage.Dump(taskItem.Item)
-	spider.SendMsg(taskItem.Id, "Dump", fmt.Sprintf("Dumped %s", taskItem.Id), nil)
+	spider.SendMsg(taskItem.Id, DUMP, fmt.Sprintf("Dumped %s", taskItem.Id), taskItem.Item)
 }
 
 //

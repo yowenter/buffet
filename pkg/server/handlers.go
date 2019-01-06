@@ -53,6 +53,7 @@ func (s *BuffetAPIServer) collect(w http.ResponseWriter, r *http.Request) {
 	}
 
 	task := spider.NewTask(iftttAction.ActionFields.URL)
+	spider.TotalTasks.PushTask(&task)
 	s.Spider.TaskChan <- &task
 
 	data := IftttObject{
@@ -102,6 +103,15 @@ func (s *BuffetAPIServer) status(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Fprintf(w, "ok")
+}
+
+func (s *BuffetAPIServer) listTask(w http.ResponseWriter, r *http.Request) {
+	b, err := json.Marshal(spider.TotalTasks)
+	if err != nil {
+		http.Error(w, "Internal Server Error", 500)
+		return
+	}
+	fmt.Fprintf(w, string(b))
 }
 
 func (s *BuffetAPIServer) test(w http.ResponseWriter, r *http.Request) {

@@ -20,4 +20,5 @@ func (s *BuffetAPIServer) InstallHandlers() {
 	s.Router.HandleFunc("/ifttt/v1/actions/collect", s.collect)
 	s.Router.HandleFunc("/ifttt/v1/test/setup", s.test)
 	s.Router.HandleFunc("/ifttt/v1/status", s.status)
+	s.Router.HandleFunc("/internal/tasks", s.listTask)
 }
