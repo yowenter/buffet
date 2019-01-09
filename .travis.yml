@@ -9,4 +9,5 @@ go:
   - dep ensure
 
 
-script: go test -v ./...
+script: 
+  - go test -v ./...
