@@ -1,4 +1,5 @@
 # Buffet: Ifttt Service for collect any link  : -)
+[![Build Status](https://travis-ci.com/yowenter/buffet.svg?branch=master)](https://travis-ci.com/yowenter/buffet)
 
 Collect anything you like to your own database. ( eg: airtable & spreadsheet & ... ).
 
