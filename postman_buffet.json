@@ -1,0 +1,35 @@
+{
+  "id": "2037ef46-0592-968f-3269-1f56c257142d",
+  "name": "Buffet",
+  "timestamp": 1546656795670,
+  "requests": [
+    {
+      "collectionId": "2037ef46-0592-968f-3269-1f56c257142d",
+      "id": "0ad11141-1139-8580-3e8e-424151de5b7d",
+      "name": "collect url",
+      "description": "",
+      "url": "localhost:5000/ifttt/v1/actions/collect",
+      "method": "POST",
+      "headers": "Ifttt-Service-Key: {Ifttt-Service-Key}\nIfttt-Channel-key: {Ifttt-Service-Key}\nContent-Type: application/json\n",
+      "data": "{\n  \"actionFields\": {\n    \"url\": \"https://book.douban.com/subject/30222457\",\n    \"tags\": \"Example, Favorite, Ifttt\"\n  },\n  \"user\": {\n    \"timezone\": \"America/Los_Angeles\"\n  },\n  \"ifttt_source\": {\n    \"id\": \"eaab474344a4d2ed\",\n    \"url\": \"http://example.com/eaab474344a4d2ed\"\n  }\n}",
+      "dataMode": "raw",
+      "timestamp": 0,
+      "responses": [],
+      "version": 2
+    },
+    {
+      "collectionId": "2037ef46-0592-968f-3269-1f56c257142d",
+      "id": "2b53e85c-6a68-5488-15bb-ac46419674b8",
+      "name": "list task",
+      "description": "",
+      "url": "localhost:5000/internal/tasks",
+      "method": "GET",
+      "headers": "Ifttt-Service-Key: {Ifttt-Service-Key}\nIfttt-Channel-key: {Ifttt-Service-Key}\nContent-Type: application/json\n",
+      "data": "{\n  \"actionFields\": {\n    \"url\": \"https://book.douban.com/subject/30222457\",\n    \"tags\": \"Example, Favorite, Ifttt\"\n  },\n  \"user\": {\n    \"timezone\": \"America/Los_Angeles\"\n  },\n  \"ifttt_source\": {\n    \"id\": \"eaab474344a4d2ed\",\n    \"url\": \"http://example.com/eaab474344a4d2ed\"\n  }\n}",
+      "dataMode": "raw",
+      "timestamp": 0,
+      "responses": [],
+      "version": 2
+    }
+  ]
+}
